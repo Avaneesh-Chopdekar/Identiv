@@ -5,5 +5,12 @@ Home
 {% endblock %}
 
 {% block body %}
-<h1>Welcome!</h1>
+<h1 class="title is-1 has-text-centered has-text-weight-semibold mt-3">Welcome!</h1>
+
+<div class="positioned-bottom">
+    <div class="buttons are-large is-centered">
+        <button id="proceed-btn" class="button is-rounded is-primary mr-4">Proceed</button>
+        <a href="{% url 'register' %}" class="button is-rounded is-primary is-outlined">Register</a>
+    </div>
+</div>
 {% endblock %}
