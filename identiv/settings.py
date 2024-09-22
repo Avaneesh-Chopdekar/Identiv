@@ -39,6 +39,8 @@ DEBUG = ENVIRONMENT == "dev"
 
 AUTH_USER_MODEL = "app.Organization"
 
+LOGIN_REDIRECT_URL = "/app/"
+
 # Additional settings based on the environment
 if ENVIRONMENT == "prod":
     # Production settings (e.g., additional security settings)

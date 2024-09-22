@@ -1,0 +1,23 @@
+{% extends 'onboarding/base.html' %}
+
+{% block title %}
+Delete Account | Identiv
+{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="notification is-danger">
+            <h1 class="title">Are you sure you want to delete your account?</h1>
+            <p class="subtitle mt-4">
+                This action cannot be undone, and you will lose access to all your data.
+            </p>
+            <form method="POST" action="{% url 'delete_account' %}">
+                {% csrf_token %}
+                <button class="button is-danger is-large">Yes, delete my account</button>
+                <a href="#" class="button is-light is-large">Cancel</a>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
