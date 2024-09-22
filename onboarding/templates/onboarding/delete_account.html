@@ -14,7 +14,7 @@ Delete Account | Identiv
             </p>
             <form method="POST" action="{% url 'delete_account' %}">
                 {% csrf_token %}
-                <button class="button is-danger is-large">Yes, delete my account</button>
+                <button class="button is-large">Yes, delete my account</button>
                 <a href="#" class="button is-light is-large">Cancel</a>
             </form>
         </div>

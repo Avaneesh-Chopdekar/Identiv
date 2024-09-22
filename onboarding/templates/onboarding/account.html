@@ -1,0 +1,19 @@
+{% extends 'onboarding/base.html' %}
+
+{% block title %}
+Your Account | Identiv
+{% endblock %}
+
+{% block body %}
+<h2>{{ user.name }}</h2>
+<p>First Name: {{ user.first_name }}</p>
+<p>Last Name: {{ user.last_name }}</p>
+<p>Email: {{ user.email }}</p>
+<p>Phone Number: {{ user.phone_number }}</p>
+<p>Address: {{ user.address }}</p>
+
+<a href="#" class="button is-primary is-outlined">Dashboard</a>
+<a href="{% url 'logout' %}" class="button is-warning is-outlined">Logout</a>
+<a href="{% url 'edit_account' %}" class="button is-info is-outlined">Edit Account</a>
+<a href="{% url 'delete_account' %}" class="button is-danger is-outlined">Delete Account</a>
+{% endblock %}

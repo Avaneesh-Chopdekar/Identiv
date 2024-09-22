@@ -1,0 +1,22 @@
+{% extends 'onboarding/base.html' %}
+
+{% block title %}
+Logout | Identiv
+{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="content has-text-centered">
+            <h1 class="title">Are you sure you want to logout?</h1>
+            <p class="subtitle mt-3">You will need to sign in again to access your account.</p>
+
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="button is-danger is-large">Yes, Logout</button>
+                <a href="{% url 'account' %}" class="button is-light is-large">Cancel</a>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

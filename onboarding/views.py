@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from . import forms
 
@@ -26,6 +27,15 @@ class CustomLoginView(LoginView):
     template_name = "onboarding/login.html"
 
 
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+        return redirect("login")
+
+    return render(request, "onboarding/logout.html")
+
+
+@login_required
 def delete_account(request):
     user = request.user
     if request.method == "POST":
@@ -33,3 +43,22 @@ def delete_account(request):
         logout(request)
         return redirect("signup")
     return render(request, "onboarding/delete_account.html")
+
+
+@login_required
+def account(request):
+    return render(request, "onboarding/account.html")
+
+
+@login_required
+def edit_account(request):
+    user = request.user
+    if request.method == "POST":
+        form = forms.EditOrganizationDetailsForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("account")
+    else:
+        form = forms.EditOrganizationDetailsForm(instance=user)
+
+    return render(request, "onboarding/edit_account.html", {"form": form})

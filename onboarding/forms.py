@@ -52,3 +52,21 @@ class OrganizationLoginForm(AuthenticationForm):
         ),
         error_messages={"required": _("Please enter your password.")},
     )
+
+
+class EditOrganizationDetailsForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["email", "name", "first_name", "last_name", "phone_number", "address"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({"class": "input"})
+
+    # Optional: Add custom validation if needed
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Email address is already in use.")
+        return email
