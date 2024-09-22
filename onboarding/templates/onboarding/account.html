@@ -5,15 +5,41 @@ Your Account | Identiv
 {% endblock %}
 
 {% block body %}
-<h2>{{ user.name }}</h2>
-<p>First Name: {{ user.first_name }}</p>
-<p>Last Name: {{ user.last_name }}</p>
-<p>Email: {{ user.email }}</p>
-<p>Phone Number: {{ user.phone_number }}</p>
-<p>Address: {{ user.address }}</p>
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <div class="box">
+                    <p class="title is-4">{{ user.name }}</p>
+                    <p class="subtitle is-6 mt-3">{{ user.email }}</p>
+                </div>
 
-<a href="#" class="button is-primary is-outlined">Dashboard</a>
-<a href="{% url 'logout' %}" class="button is-warning is-outlined">Logout</a>
-<a href="{% url 'edit_account' %}" class="button is-info is-outlined">Edit Account</a>
-<a href="{% url 'delete_account' %}" class="button is-danger is-outlined">Delete Account</a>
+                <hr>
+
+                <div class="content">
+                    <p>
+                        <strong>Admin First Name:</strong> {{ user.first_name }}
+                    </p>
+                    <p>
+                        <strong>Admin Last Name:</strong> {{ user.last_name }}
+                    </p>
+                    <p>
+                        <strong>Phone Number:</strong> {{ user.phone_number }}
+                    </p>
+                    <p>
+                        <strong>Address:</strong> {{ user.address }}
+                    </p>
+
+                    <div class="my-5">
+                        <a href="#" class="button is-primary is-outlined">Dashboard</a>
+                        <a href="{% url 'logout' %}" class="button is-warning is-outlined mx-3">Logout</a>
+                        <a href="{% url 'edit_account' %}" class="button is-info is-outlined mr-3">Edit Account</a>
+                        <a href="{% url 'delete_account' %}" class="button is-danger is-outlined">Delete Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
 {% endblock %}
