@@ -10,6 +10,14 @@ def landing_page(request):
     return render(request, "onboarding/index.html")
 
 
+def how_to_use(request):
+    return render(request, "onboarding/how_to_use.html")
+
+
+def purpose(request):
+    return render(request, "onboarding/purpose.html")
+
+
 def signup_view(request):
     if request.method == "POST":
         form = forms.OrganizationCreationForm(request.POST)
