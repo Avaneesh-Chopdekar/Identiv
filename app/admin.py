@@ -7,7 +7,7 @@ from .models import LoginLog, Person
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
     # Define the fields to display in the admin panel
-    list_display = ("email", "first_name", "last_name", "is_staff")
+    list_display = ("email", "name", "first_name", "last_name", "is_staff")
 
     # Define the fields to use when adding a new user
     add_fieldsets = (
@@ -22,7 +22,7 @@ class CustomUserAdmin(UserAdmin):
 
     # Define the fields for the user form in the admin panel
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("name", "email", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name")}),
         (
             "Permissions",
@@ -40,7 +40,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
     # Tell Django to use the email field as the unique identifier
-    search_fields = ("email",)
+    search_fields = ("email", "name")
     ordering = ("email",)
 
 

@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
 import uuid
+from pgvector.django import VectorField
 
 from app.manager import OrganizationManager
 
@@ -32,7 +33,7 @@ class Person(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     organization = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
-    face_embedding = ArrayField(models.FloatField(), size=128)
+    face_embedding = VectorField(dimensions=128)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
