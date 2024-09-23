@@ -1,8 +1,12 @@
 # myapp/forms.py
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import get_user_model
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    UserCreationForm,
+    SetPasswordForm,
+    PasswordResetForm,
+)
 from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
@@ -70,3 +74,33 @@ class EditOrganizationDetailsForm(forms.ModelForm):
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("Email address is already in use.")
         return email
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                "class": "input",
+                "placeholder": "Enter your email",
+            }
+        )
+    )
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "input",
+                "placeholder": "Enter new password",
+            }
+        )
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "input",
+                "placeholder": "Confirm new password",
+            }
+        )
+    )

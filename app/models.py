@@ -12,6 +12,8 @@ class Organization(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
+    username = None  # Remove username field
+
     USERNAME_FIELD = "email"  # Replace username with email
     REQUIRED_FIELDS = ["first_name", "last_name"]  # Required fields other than email
 

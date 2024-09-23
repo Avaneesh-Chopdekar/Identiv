@@ -1,8 +1,14 @@
-from django.contrib.auth import login, logout
-from django.contrib.auth.views import LoginView
+from django.contrib.auth import login, logout, get_user_model
+from django.contrib.auth.views import (
+    LoginView,
+    PasswordResetConfirmView,
+    PasswordResetView,
+)
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from . import forms
+
+User = get_user_model()
 
 
 # Create your views here.
@@ -70,3 +76,21 @@ def edit_account(request):
         form = forms.EditOrganizationDetailsForm(instance=user)
 
     return render(request, "onboarding/edit_account.html", {"form": form})
+
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = forms.CustomPasswordResetForm
+    template_name = "onboarding/password_reset.html"
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                "There is no user registered with this email address."
+            )
+        return email
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = forms.CustomSetPasswordForm
+    template_name = "onboarding/password_reset_confirm.html"

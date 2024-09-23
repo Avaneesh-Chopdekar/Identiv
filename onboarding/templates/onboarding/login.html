@@ -13,5 +13,6 @@ Login | Identiv
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="button is-primary is-medium my-5">Login</button>
+    <a href="{% url 'password_reset' %}" class="button is-primary is-outlined is-medium my-5">Forgot Password?</a>
 </form>
 {% endblock %}
