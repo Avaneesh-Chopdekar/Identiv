@@ -32,7 +32,9 @@ Your Account | Identiv
 
                     <div class="my-5">
                         <a href="#" class="button is-primary is-outlined">Dashboard</a>
-                        <a href="{% url 'logout' %}" class="button is-warning is-outlined mx-3">Logout</a>
+                        <a href="{% url 'password_reset' %}" class="button is-warning is-outlined mx-3">
+                            Reset Password
+                        </a>
                         <a href="{% url 'edit_account' %}" class="button is-info is-outlined mr-3">Edit Account</a>
                         <a href="{% url 'delete_account' %}" class="button is-danger is-outlined">Delete Account</a>
                     </div>
