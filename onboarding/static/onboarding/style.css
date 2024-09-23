@@ -1,3 +1,8 @@
+:root {
+    --placeholder-color-light: black;
+    --placeholder-color-dark: white;
+}
+
 form p {
     margin-top: 1rem;
 }
@@ -5,4 +10,50 @@ form p {
 ul.errorlist {
     /* @apply has-text-danger */
     color: hsl(348, 100%, 61%)
+}
+
+/* Light mode styles */
+@media (prefers-color-scheme: light) {
+    input::placeholder {
+        color: var(--placeholder-color-light) !important;
+    }
+
+    input::-webkit-input-placeholder {
+        color: var(--placeholder-color-light) !important;
+    }
+
+    input::-moz-placeholder {
+        color: var(--placeholder-color-light) !important;
+    }
+
+    input:-ms-input-placeholder {
+        color: var(--placeholder-color-light) !important;
+    }
+
+    input::-ms-input-placeholder {
+        color: var(--placeholder-color-light) !important;
+    }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    input::placeholder {
+        color: var(--placeholder-color-dark) !important;
+    }
+
+    input::-webkit-input-placeholder {
+        color: var(--placeholder-color-dark) !important;
+    }
+
+    input::-moz-placeholder {
+        color: var(--placeholder-color-dark) !important;
+    }
+
+    input:-ms-input-placeholder {
+        color: var(--placeholder-color-dark) !important;
+    }
+
+    input::-ms-input-placeholder {
+        color: var(--placeholder-color-dark) !important;
+    }
 }

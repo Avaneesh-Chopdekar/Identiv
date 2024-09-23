@@ -28,7 +28,20 @@ class OrganizationCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["name"].widget.attrs.update({"required": "required"})
+        self.fields["name"].widget.attrs.update(
+            {"required": "required", "placeholder": "Enter your organization name"}
+        )
+        self.fields["first_name"].widget.attrs.update(
+            {"placeholder": "Enter Admin's first name"}
+        )
+        self.fields["last_name"].widget.attrs.update(
+            {"placeholder": "Enter Admin's last name"}
+        )
+        self.fields["phone_number"].widget.attrs.update(
+            {
+                "placeholder": "Enter phone number starting with country code e.g. +91 9876543210"
+            }
+        )
         for field_name, field in self.fields.items():
             field.widget.attrs.update({"class": "input"})
 
