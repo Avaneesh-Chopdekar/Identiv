@@ -1,6 +1,75 @@
-.positioned-bottom {
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+#video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensure the video fills the screen */
+    z-index: 1;
+}
+
+.heading-container {
+    position: absolute;
+    top: 20px;
+    z-index: 2;
+    /* Ensure the heading is above the video */
+    text-align: center;
+    width: 100%;
+}
+
+.heading-container h1 {
+    user-select: none;
+    position: relative;
+    display: inline-block;
+    font-size: 2.5rem;
+    color: white;
+    /* Title color */
+}
+
+.heading-container h1::before {
+    content: attr(data-text);
+    user-select: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: black;
+    /* Stroke color */
+    z-index: -1;
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-size: 2.5rem;
+    /* Same size as the title */
+    filter: blur(2px);
+    /* Adjust blur for stroke effect */
+}
+
+.button-container {
     position: absolute;
     bottom: 3rem;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    /* Ensure the buttons are above the video */
+}
+
+.button {
+    margin: 10px;
 }

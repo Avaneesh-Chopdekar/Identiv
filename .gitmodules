@@ -1,0 +1,3 @@
+[submodule "antispoofing"]
+	path = antispoofing
+	url = https://github.com/minivision-ai/Silent-Face-Anti-Spoofing
