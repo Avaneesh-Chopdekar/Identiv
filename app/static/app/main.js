@@ -6,6 +6,11 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   });
 }
 
+const dialog = document.getElementById("notification-dialog");
+const dialogMessageBox = document.querySelector(".message");
+const dialogMessageBody = document.querySelector(".message-body");
+const closeNotificationBtn = document.getElementById("close-notification");
+
 document.getElementById("loginBtn").addEventListener("click", function () {
   const canvas = document.createElement("canvas");
   canvas.width = video.videoWidth;
@@ -27,10 +32,23 @@ document.getElementById("loginBtn").addEventListener("click", function () {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.message === "Login successful!") {
-        alert("Login successful!");
-      } else {
-        alert(data.message);
+      if (!dialog.open) {
+        if (data.status === "error") {
+          dialogMessageBox.classList.add("is-danger");
+          dialogMessageBox.classList.remove("is-success");
+        } else {
+          dialogMessageBox.classList.add("is-success");
+          dialogMessageBox.classList.remove("is-danger");
+        }
+        dialogMessageBody.textContent = data.message;
+        dialog.showModal();
+        setTimeout(() => {
+          dialog.close();
+        }, 5000);
       }
     });
+});
+
+closeNotificationBtn.addEventListener("click", () => {
+  dialog.close();
 });

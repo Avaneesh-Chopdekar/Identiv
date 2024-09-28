@@ -22,6 +22,17 @@ Home
     </div>
 </div>
 
+<dialog id="notification-dialog">
+    <article class="message is-primary">
+        <div class="message-header">
+            <p>Notification</p>
+            <button class="delete" aria-label="close" id="close-notification"></button>
+        </div>
+        <div class="message-body">
+        </div>
+    </article>
+</dialog>
+
 <form style="display:none;">
     {% csrf_token %}
 </form>

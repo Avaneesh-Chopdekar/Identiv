@@ -7,12 +7,13 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from face_recognition import face_encodings, compare_faces, load_image_file
-from .models import Person, LoginLog
+from .models import LoginLog
 from datetime import datetime
 from antispoofing.test import test
 from .utils import find_person_by_embedding, extract_image_from_data_uri
 
 
+@login_required
 @require_POST
 @ensure_csrf_cookie
 def face_login(request):
@@ -26,7 +27,9 @@ def face_login(request):
         image = extract_image_from_data_uri(request.POST.get("image_data"))
 
         if image is None:
-            return JsonResponse({"status": "error", "message": "Invalid image data!"})
+            return JsonResponse(
+                {"status": "error", "message": "Invalid image data!"}, status=400
+            )
 
         face_embedding = face_encodings(image)[0]
 
@@ -40,9 +43,13 @@ def face_login(request):
                 {"status": "success", "message": "Logged in successfully!"}
             )
         else:
-            return JsonResponse({"status": "error", "message": "Person not found!"})
+            return JsonResponse(
+                {"status": "error", "message": "User not registered!"}, status=401
+            )
     else:
-        return JsonResponse({"status": "error", "message": "Spoofing detected!"})
+        return JsonResponse(
+            {"status": "error", "message": "Spoofing detected!"}, status=401
+        )
 
 
 # Create your views here.
