@@ -92,3 +92,7 @@ dialog {
 dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+.alert-message {
+    font-size: 1.5rem;
+}
