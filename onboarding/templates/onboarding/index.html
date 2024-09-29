@@ -91,9 +91,10 @@ Identiv - Face Recognition Security System
         <h1 class="title has-text-centered">Frequently Asked Questions</h1>
 
         <div class="box">
+            {% for faq in faqs %}
             <article class="message">
                 <div class="message-header" onclick="toggleAccordion(this)">
-                    <p>What is Identiv and how does it work?</p>
+                    <p>{{ faq.question }}</p>
                     <button class="button is-small toggle-accordion" aria-label="toggle">
                         <span class="icon is-small">
                             <i class="fas fa-angle-down"></i>
@@ -101,55 +102,10 @@ Identiv - Face Recognition Security System
                     </button>
                 </div>
                 <div class="message-body" style="display: none;">
-                    Identiv is a cutting-edge identity verification app that uses face recognition and anti-spoofing
-                    technology to authenticate users quickly and securely.
+                    {{ faq.answer }}
                 </div>
             </article>
-
-            <article class="message">
-                <div class="message-header" onclick="toggleAccordion(this)">
-                    <p>Is my data secure?</p>
-                    <button class="button is-small toggle-accordion" aria-label="toggle">
-                        <span class="icon is-small">
-                            <i class="fas fa-angle-down"></i>
-                        </span>
-                    </button>
-                </div>
-                <div class="message-body" style="display: none;">
-                    Yes, your data is fully encrypted and handled with the utmost security measures, ensuring that your
-                    personal information is safe.
-                </div>
-            </article>
-
-            <article class="message">
-                <div class="message-header" onclick="toggleAccordion(this)">
-                    <p>How fast is the verification process?</p>
-                    <button class="button is-small toggle-accordion" aria-label="toggle">
-                        <span class="icon is-small">
-                            <i class="fas fa-angle-down"></i>
-                        </span>
-                    </button>
-                </div>
-                <div class="message-body" style="display: none;">
-                    The verification process takes only a few seconds, providing a seamless experience without
-                    compromising security.
-                </div>
-            </article>
-
-            <article class="message">
-                <div class="message-header" onclick="toggleAccordion(this)">
-                    <p>What devices are supported?</p>
-                    <button class="button is-small toggle-accordion" aria-label="toggle">
-                        <span class="icon is-small">
-                            <i class="fas fa-angle-down"></i>
-                        </span>
-                    </button>
-                </div>
-                <div class="message-body" style="display: none;">
-                    Identiv is compatible with most devices that have a front camera, including smartphones, tablets,
-                    and computers.
-                </div>
-            </article>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -161,7 +117,7 @@ Identiv - Face Recognition Security System
     <div class="container has-text-centered">
         <h2 class="title" id="cta-title">Start Using Our Service Today!</h2>
         <h3 class="subtitle">Join our community and experience seamless security.</h3>
-        <a href="#signup" class="button is-white is-large">Sign Up Now</a>
+        <a href="{% url 'signup' %}" class="button is-white is-large">Sign Up Now</a>
     </div>
 </section>
 

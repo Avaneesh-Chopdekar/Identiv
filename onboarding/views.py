@@ -13,7 +13,25 @@ User = get_user_model()
 
 # Create your views here.
 def landing_page(request):
-    return render(request, "onboarding/index.html")
+    faqs = [
+        {
+            "question": "What is Identiv and how does it work?",
+            "answer": "Identiv is a cutting-edge identity verification app that uses face recognition and anti-spoofing technology to authenticate users quickly and securely.",
+        },
+        {
+            "question": "Is my data secure?",
+            "answer": "Yes, your data is fully encrypted and handled with the utmost security measures, ensuring that your personal information is safe.",
+        },
+        {
+            "question": "How fast is the verification process?",
+            "answer": "The verification process takes only a few seconds, providing a seamless experience without compromising security.",
+        },
+        {
+            "question": "What devices are supported?",
+            "answer": "Identiv is compatible with most devices that have a front camera, including smartphones, tablets, and computers.",
+        },
+    ]
+    return render(request, "onboarding/index.html", context={"faqs": faqs})
 
 
 def how_to_use(request):
