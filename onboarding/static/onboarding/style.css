@@ -70,7 +70,7 @@ body {
 
 /* Navbar burger for mobile */
 .navbar-burger {
-    margin-right: auto;
+    margin-left: auto;
 }
 
 /* Fix Bulma navbar height issue */
