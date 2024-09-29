@@ -57,3 +57,78 @@ ul.errorlist {
         color: var(--placeholder-color-dark) !important;
     }
 }
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar burger for mobile */
+.navbar-burger {
+    margin-right: auto;
+}
+
+/* Fix Bulma navbar height issue */
+.is-fixed-top {
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+}
+
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('bg.webp');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero .title {
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.features-section {
+    padding-top: 50px;
+}
+
+.features-section .card {
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.features-section .card:hover {
+    transform: scale(1.05);
+}
+
+/* Custom styles for FAQ section */
+.message-header {
+    cursor: pointer;
+}
+
+.message-header {
+    cursor: pointer;
+}
+
+.toggle-accordion {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.toggle-accordion .icon {
+    transition: transform 0.3s ease;
+}
+
+.toggle-accordion.active .icon {
+    transform: rotate(180deg);
+}
+
+.cta-section {
+    background-color: #00d1b2;
+    padding: 50px 0;
+}
+
+.cta-section .title,
+.cta-section .subtitle {
+    color: white;
+}

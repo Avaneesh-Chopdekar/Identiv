@@ -5,5 +5,174 @@ Identiv - Face Recognition Security System
 {% endblock %}
 
 {% block body %}
-<h1 class="title is-1 has-text-centered has-text-weight-semibold mt-3">Welcome to Identiv</h1>
+<!-- Hero Section -->
+<section class="hero is-fullheight-with-navbar">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title is-1" id="hero-title">Secure, Seamless, and Efficient Identity Verification</h1>
+            <h2 class="subtitle has-text-light mt-1">Authenticate in seconds, protect with confidence</h2>
+            <div class="buttons is-centered" id="cta-buttons">
+                <a href="{% url 'how_to_use' %}" class="button is-primary is-large">Get Started</a>
+                <a href="{% url 'purpose' %}" class="button is-light is-large">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section features-section">
+    <div class="container">
+        <h2 class="title has-text-centered" id="features-title">Key Features</h2>
+        <div class="columns">
+            <div class="column">
+                <div class="card has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fas fa-lock fa-3x"></i>
+                    </span>
+                    <h3 class="title is-4 mt-3 mb-1">Top-notch Security</h3>
+                    <p>Cutting-edge technology to ensure your data is secure and safe.</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fas fa-user-check fa-3x"></i>
+                    </span>
+                    <h3 class="title is-4 mt-3 mb-1">Seamless Verification</h3>
+                    <p>Instant verification with our face recognition system.</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fas fa-chart-line fa-3x"></i>
+                    </span>
+                    <h3 class="title is-4 mt-3 mb-1">Efficiency</h3>
+                    <p>Perform real-time verification without compromising speed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="title has-text-centered" id="how-it-works-title">How It Works</h2>
+        <div class="columns">
+            <div class="column has-text-centered">
+                <span class="icon is-large">
+                    <i class="fas fa-camera fa-3x"></i>
+                </span>
+                <h3 class="title is-5 mt-3 mb-1">1. Scan Your Face</h3>
+                <p>Open the app and let the camera scan your face.</p>
+            </div>
+            <div class="column has-text-centered">
+                <span class="icon is-large">
+                    <i class="fas fa-shield-alt fa-3x"></i>
+                </span>
+                <h3 class="title is-5 mt-3 mb-1">2. Verification</h3>
+                <p>Our AI checks for liveness and performs verification.</p>
+            </div>
+            <div class="column has-text-centered">
+                <span class="icon is-large">
+                    <i class="fas fa-user-shield fa-3x"></i>
+                </span>
+                <h3 class="title is-5 mt-3 mb-1">3. Secure Login</h3>
+                <p>Once verified, you're logged in securely.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="section">
+    <div class="container">
+        <h1 class="title has-text-centered">Frequently Asked Questions</h1>
+
+        <div class="box">
+            <article class="message">
+                <div class="message-header" onclick="toggleAccordion(this)">
+                    <p>What is Identiv and how does it work?</p>
+                    <button class="button is-small toggle-accordion" aria-label="toggle">
+                        <span class="icon is-small">
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="message-body" style="display: none;">
+                    Identiv is a cutting-edge identity verification app that uses face recognition and anti-spoofing
+                    technology to authenticate users quickly and securely.
+                </div>
+            </article>
+
+            <article class="message">
+                <div class="message-header" onclick="toggleAccordion(this)">
+                    <p>Is my data secure?</p>
+                    <button class="button is-small toggle-accordion" aria-label="toggle">
+                        <span class="icon is-small">
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="message-body" style="display: none;">
+                    Yes, your data is fully encrypted and handled with the utmost security measures, ensuring that your
+                    personal information is safe.
+                </div>
+            </article>
+
+            <article class="message">
+                <div class="message-header" onclick="toggleAccordion(this)">
+                    <p>How fast is the verification process?</p>
+                    <button class="button is-small toggle-accordion" aria-label="toggle">
+                        <span class="icon is-small">
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="message-body" style="display: none;">
+                    The verification process takes only a few seconds, providing a seamless experience without
+                    compromising security.
+                </div>
+            </article>
+
+            <article class="message">
+                <div class="message-header" onclick="toggleAccordion(this)">
+                    <p>What devices are supported?</p>
+                    <button class="button is-small toggle-accordion" aria-label="toggle">
+                        <span class="icon is-small">
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="message-body" style="display: none;">
+                    Identiv is compatible with most devices that have a front camera, including smartphones, tablets,
+                    and computers.
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Call to Action Section -->
+<section class="section cta-section">
+    <div class="container has-text-centered">
+        <h2 class="title" id="cta-title">Start Using Our Service Today!</h2>
+        <h3 class="subtitle">Join our community and experience seamless security.</h3>
+        <a href="#signup" class="button is-white is-large">Sign Up Now</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>&copy; <span id="current-year"></span> Identiv - Avaneesh Chopdekar. All
+            rights reserved.</p>
+    </div>
+</footer>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
 {% endblock %}
