@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout, get_user_model
+from django.contrib.auth import login, logout
 from django.contrib.auth.views import (
     LoginView,
     PasswordResetConfirmView,
@@ -6,9 +6,8 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from app.models import Organization
 from . import forms
-
-User = get_user_model()
 
 
 # Create your views here.
@@ -102,7 +101,7 @@ class CustomPasswordResetView(PasswordResetView):
 
     def clean_email(self):
         email = self.cleaned_data["email"]
-        if not User.objects.filter(email=email).exists():
+        if not Organization.objects.filter(email=email).exists():
             raise forms.ValidationError(
                 "There is no user registered with this email address."
             )

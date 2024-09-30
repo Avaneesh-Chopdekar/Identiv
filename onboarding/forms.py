@@ -1,6 +1,5 @@
 # myapp/forms.py
 from django import forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (
     AuthenticationForm,
     UserCreationForm,
@@ -8,18 +7,15 @@ from django.contrib.auth.forms import (
     PasswordResetForm,
 )
 from django.utils.translation import gettext_lazy as _
-
-User = get_user_model()
+from app.models import Organization
 
 
 class OrganizationCreationForm(UserCreationForm):
     class Meta:
-        model = User
+        model = Organization
         fields = [
             "email",
-            "name",
-            "first_name",
-            "last_name",
+            "organization_name",
             "phone_number",
             "address",
             "password1",
@@ -28,15 +24,6 @@ class OrganizationCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["name"].widget.attrs.update(
-            {"required": "required", "placeholder": "Enter your organization name"}
-        )
-        self.fields["first_name"].widget.attrs.update(
-            {"placeholder": "Enter Admin's first name"}
-        )
-        self.fields["last_name"].widget.attrs.update(
-            {"placeholder": "Enter Admin's last name"}
-        )
         self.fields["phone_number"].widget.attrs.update(
             {
                 "placeholder": "Enter phone number starting with country code e.g. +91 9876543210"
@@ -73,8 +60,8 @@ class OrganizationLoginForm(AuthenticationForm):
 
 class EditOrganizationDetailsForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ["email", "name", "first_name", "last_name", "phone_number", "address"]
+        model = Organization
+        fields = ["email", "organization_name", "phone_number", "address"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -84,7 +71,11 @@ class EditOrganizationDetailsForm(forms.ModelForm):
     # Optional: Add custom validation if needed
     def clean_email(self):
         email = self.cleaned_data.get("email")
-        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+        if (
+            Organization.objects.filter(email=email)
+            .exclude(pk=self.instance.pk)
+            .exists()
+        ):
             raise forms.ValidationError("Email address is already in use.")
         return email
 

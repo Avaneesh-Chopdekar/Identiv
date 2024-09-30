@@ -55,7 +55,9 @@ def face_login(request):
 # Create your views here.
 @login_required
 def index(request):
-    return render(request, "app/index.html", {"organization_name": request.user.name})
+    return render(
+        request, "app/index.html", {"organization_name": request.user.organization_name}
+    )
 
 
 @login_required

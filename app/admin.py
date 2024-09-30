@@ -1,13 +1,21 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import LoginLog, Person
+from .models import (
+    Organization,
+    Person,
+    PersonDetails,
+    LoginLog,
+    Role,
+    CustomField,
+    Feedback,
+    Option,
+)
 
 
 # Register your models here.
-class CustomUserAdmin(UserAdmin):
+class OrganizationAdmin(UserAdmin):
     # Define the fields to display in the admin panel
-    list_display = ("email", "name", "first_name", "last_name", "is_staff")
+    list_display = ("email", "organization_name", "is_staff")
 
     # Define the fields to use when adding a new user
     add_fieldsets = (
@@ -22,8 +30,7 @@ class CustomUserAdmin(UserAdmin):
 
     # Define the fields for the user form in the admin panel
     fieldsets = (
-        (None, {"fields": ("name", "email", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name")}),
+        (None, {"fields": ("organization_name", "email", "password")}),
         (
             "Permissions",
             {
@@ -40,11 +47,16 @@ class CustomUserAdmin(UserAdmin):
     )
 
     # Tell Django to use the email field as the unique identifier
-    search_fields = ("email", "name")
+    search_fields = ("email", "organization_name")
     ordering = ("email",)
 
 
 # Register the Organization model with the customized admin class
-admin.site.register(get_user_model(), CustomUserAdmin)
+admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Person)
+admin.site.register(Role)
 admin.site.register(LoginLog)
+admin.site.register(PersonDetails)
+admin.site.register(CustomField)
+admin.site.register(Option)
+admin.site.register(Feedback)
