@@ -5,9 +5,23 @@
 {% endblock %}
 
 {% block body %}
-<aside>Sidebar</aside>
-<div>
-    <h1 class="title is-1 has-text-centered has-text-weight-semibold mt-3">Dashboard</h1>
-    {% block content %}{% endblock %}
+<div class="content-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar is-one-fifth menu has-background-light">
+        <p class="menu-label">Navigation</p>
+        <ul class="menu-list">
+            <li><a href="{% url 'index' %}" class="has-background-primary has-text-dark">Main</a></li>
+            <li><a href="{% url 'registration_fields' %}" class="has-background-primary has-text-dark">Registration</a>
+            </li>
+            <li><a href="{% url 'people' %}" class="has-background-primary has-text-dark">People</a></li>
+            <li><a href="{% url 'logs' %}" class="has-background-primary has-text-dark">Logs</a></li>
+            <li><a href="{% url 'notifications' %}" class="has-background-primary has-text-dark">Notifications</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content is-four-fifths">
+        {% block content %}{% endblock %}
+    </div>
 </div>
 {% endblock %}
