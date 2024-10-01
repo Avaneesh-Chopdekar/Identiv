@@ -1,15 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import (
-    Organization,
-    Person,
-    PersonDetail,
-    LoginLog,
-    Role,
-    CustomField,
-    Feedback,
-    Option,
-)
+from .models import Organization, Person, Role
 
 
 # Register your models here.
@@ -55,8 +46,3 @@ class OrganizationAdmin(UserAdmin):
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Person)
 admin.site.register(Role)
-admin.site.register(LoginLog)
-admin.site.register(PersonDetail)
-admin.site.register(CustomField)
-admin.site.register(Option)
-admin.site.register(Feedback)

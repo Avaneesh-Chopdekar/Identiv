@@ -7,7 +7,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from face_recognition import face_encodings, compare_faces, load_image_file
-from .models import LoginLog
+from dashboard.models import LoginLog
 from datetime import datetime
 from antispoofing.test import test
 from .utils import find_person_by_embedding, extract_image_from_data_uri
