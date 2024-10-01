@@ -1,0 +1,13 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}
+{% block title_section %}{% endblock %} Dashboard | Identiv
+{% endblock %}
+
+{% block body %}
+<aside>Sidebar</aside>
+<div>
+    <h1 class="title is-1 has-text-centered has-text-weight-semibold mt-3">Dashboard</h1>
+    {% block content %}{% endblock %}
+</div>
+{% endblock %}
