@@ -106,10 +106,10 @@ class Option(models.Model):
         return f"Option: {self.option_name} | Field: {self.custom_field.name}"
 
 
-class PersonDetails(models.Model):
+class PersonDetail(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     person = models.ForeignKey(
-        Person, on_delete=models.CASCADE, related_name="person_details"
+        Person, on_delete=models.CASCADE, related_name="person_detail"
     )
     custom_field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
     response_text = models.TextField(

@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import (
     Organization,
     Person,
-    PersonDetails,
+    PersonDetail,
     LoginLog,
     Role,
     CustomField,
@@ -56,7 +56,7 @@ admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Person)
 admin.site.register(Role)
 admin.site.register(LoginLog)
-admin.site.register(PersonDetails)
+admin.site.register(PersonDetail)
 admin.site.register(CustomField)
 admin.site.register(Option)
 admin.site.register(Feedback)

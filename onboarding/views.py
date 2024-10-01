@@ -58,6 +58,7 @@ class CustomLoginView(LoginView):
     template_name = "onboarding/login.html"
 
 
+@login_required
 def logout_view(request):
     if request.method == "POST":
         logout(request)
