@@ -10,6 +10,7 @@ from app.models import Person
 def find_person_by_embedding(face_embedding):
     persons = Person.objects.all()
 
+    # TODO: Optimize this later
     for person in persons:
         # person.face_embedding is assumed to be a vector from pgVector field
         stored_embedding = np.array(
