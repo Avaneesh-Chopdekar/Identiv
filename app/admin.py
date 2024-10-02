@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Organization, Person, Role
+from .models import Organization, Person
 
 
 # Register your models here.
@@ -45,4 +45,3 @@ class OrganizationAdmin(UserAdmin):
 # Register the Organization model with the customized admin class
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Person)
-admin.site.register(Role)
