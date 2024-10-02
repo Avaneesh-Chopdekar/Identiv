@@ -1,0 +1,52 @@
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item has-text-weight-bold" href="{% url 'index' %}">
+            Identiv Dashboard
+        </a>
+
+        <!-- Burger icon for mobile view -->
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <!-- Navbar links for larger screens -->
+    <div id="navbarMenu" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="{% url 'landing_page' %}">
+                Home
+            </a>
+            <a class="navbar-item" href="{% url 'account' %}">
+                Account
+            </a>
+            <a class="navbar-item" href="{% url 'index' %}">
+                Main
+            </a>
+            <a class="navbar-item" href="{% url 'registration_fields' %}">
+                Registration
+            </a>
+            <a class="navbar-item" href="{% url 'people' %}">
+                People
+            </a>
+            <a class="navbar-item" href="{% url 'logs' %}">
+                Logs
+            </a>
+            <a class="navbar-item" href="{% url 'notifications' %}">
+                Notifications
+            </a>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-light" href="{% url 'logout' %}">
+                        Log out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

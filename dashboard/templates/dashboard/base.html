@@ -21,6 +21,8 @@
 </head>
 
 <body>
+    {% include 'dashboard/partials/navbar.html' %}
+
     {% block body %}{% endblock %}
 
     <script src="{% static 'dashboard/main.js' %}"></script>
