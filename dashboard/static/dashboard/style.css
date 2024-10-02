@@ -61,4 +61,16 @@ body {
         flex-direction: row;
         align-items: center;
     }
+
+    .edit-field-form {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .edit-field-form button {
+        height: fit-content;
+        margin-top: 20px;
+    }
 }

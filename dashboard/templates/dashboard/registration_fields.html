@@ -31,7 +31,7 @@ Registration Fields
 
             <div class="field">
                 <div class="control">
-                    <button class="button is-primary" name="create_field" type="submit">Submit</button>
+                    <button class="button is-primary" name="create_field" type="submit">Add Field</button>
                 </div>
             </div>
         </form>
@@ -44,11 +44,46 @@ Registration Fields
             <div class="card-content">
                 <h3 class="title is-5">{{ field.name }}</h3>
                 <p class="subtitle is-6">Type: {{ field.field_type }}</p>
+
+                <!-- Edit Custom Field -->
+                <form method="POST" class="edit-field-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="field_id" value="{{ field.uid }}">
+                    <div class="field">
+                        <label class="label" for="id_name">Field Name</label>
+                        <div class="control">
+                            {{ custom_field_form.name }}
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_field_type">Field Type</label>
+                        <div class="control">
+                            <div class="select">
+                                {{ custom_field_form.field_type }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" name="edit_field" class="button is-info">Edit Field</button>
+                </form>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="field_id" value="{{ field.uid }}">
+                    <button type="submit" name="delete_field" class="button is-danger">Delete Field</button>
+                </form>
                 {% if field.field_type in "Radio Checkbox" %}
                 <hr>
-                <ul class="list-style-type: circle !important">
+                <ul>
                     {% for option in field.options.all %}
                     <li>{{ option.option_name }}</li>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="option_id" value="{{ option.id }}">
+                        <button type="submit" name="delete_option" class="button is-danger is-small">Delete
+                            Option</button>
+                    </form>
                     {% empty %}
                     <li>No options added yet.</li>
                     {% endfor %}
