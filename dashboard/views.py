@@ -66,8 +66,6 @@ def registration_fields(request):
         # Handle editing a custom field
         elif "edit_field" in request.POST:
             field = get_object_or_404(CustomField, uid=request.POST["field_id"])
-            name = request.POST.get("name")
-            field_type = request.POST.get("field_type")
             custom_field_form = CustomFieldForm(request.POST, instance=field)
             if custom_field_form.is_valid():
                 custom_field_form.save()
