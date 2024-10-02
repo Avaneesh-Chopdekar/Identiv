@@ -46,14 +46,14 @@ Registration Fields
                 <p class="subtitle is-6">Type: {{ field.field_type }}</p>
                 {% if field.field_type in "Radio Checkbox" %}
                 <hr>
-                <ul>
+                <ul class="list-style-type: circle !important">
                     {% for option in field.options.all %}
                     <li>{{ option.option_name }}</li>
                     {% empty %}
                     <li>No options added yet.</li>
                     {% endfor %}
                 </ul>
-                <form method="POST">
+                <form method="POST" class="option-form">
                     {% csrf_token %}
                     <input type="hidden" name="field_id" value="{{ field.uid }}">
                     {{ option_form.as_p }}

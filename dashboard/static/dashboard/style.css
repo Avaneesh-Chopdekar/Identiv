@@ -35,3 +35,30 @@ body {
     display: flex;
     min-height: 100vh;
 }
+
+.option-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.option-form>p {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+
+.option-form>p>label {
+    width: 30%
+}
+
+@media screen and (min-width: 768px) {
+    .option-form {
+        flex-direction: row;
+    }
+
+    .option-form>p {
+        flex-direction: row;
+        align-items: center;
+    }
+}
