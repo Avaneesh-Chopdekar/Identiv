@@ -1,14 +1,18 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
 from dashboard.forms import CustomFieldForm, OptionForm
-from dashboard.models import CustomField, Option
+from dashboard.models import CustomField, Option, LoginLog
+from app.models import Person
 
 
 # Create your views here.
+@login_required
 def index(request):
     return render(request, "dashboard/index.html")
 
 
+@login_required
 def registration_fields(request):
     """
     Handle form submission for creating custom fields and adding options to them.
@@ -47,25 +51,27 @@ def registration_fields(request):
                 option.save()
                 return redirect("registration_fields")  # Redirect to the same view
 
-    # Handle deleting a custom field
-    if request.method == "POST" and "delete_field" in request.POST:
-        field = get_object_or_404(CustomField, uid=request.POST["field_id"])
-        field.delete()
-        return redirect("registration_fields")
-
-    # Handle deleting an option
-    if request.method == "POST" and "delete_option" in request.POST:
-        option = get_object_or_404(Option, id=request.POST["option_id"])
-        option.delete()
-        return redirect("registration_fields")
-
-    # Handle editing a custom field
-    if request.method == "POST" and "edit_field" in request.POST:
-        field = get_object_or_404(CustomField, uid=request.POST["field_id"])
-        custom_field_form = CustomFieldForm(request.POST, instance=field)
-        if custom_field_form.is_valid():
-            custom_field_form.save()
+        # Handle deleting a custom field
+        elif "delete_field" in request.POST:
+            field = get_object_or_404(CustomField, uid=request.POST["field_id"])
+            field.delete()
             return redirect("registration_fields")
+
+        # Handle deleting an option
+        elif "delete_option" in request.POST:
+            option = get_object_or_404(Option, id=request.POST["option_id"])
+            option.delete()
+            return redirect("registration_fields")
+
+        # Handle editing a custom field
+        elif "edit_field" in request.POST:
+            field = get_object_or_404(CustomField, uid=request.POST["field_id"])
+            name = request.POST.get("name")
+            field_type = request.POST.get("field_type")
+            custom_field_form = CustomFieldForm(request.POST, instance=field)
+            if custom_field_form.is_valid():
+                custom_field_form.save()
+                return redirect("registration_fields")
 
     # Fetch custom fields created by the logged-in organization
     custom_fields = CustomField.objects.filter(organization=request.user)
@@ -83,13 +89,18 @@ def registration_fields(request):
     )
 
 
+@login_required
 def people(request):
-    return render(request, "dashboard/people.html")
+    people = Person.objects.filter(organization=request.user)
+    return render(request, "dashboard/people.html", {"people": people})
 
 
+@login_required
 def logs(request):
-    return render(request, "dashboard/logs.html")
+    logs = LoginLog.objects.filter(organization=request.user)
+    return render(request, "dashboard/logs.html", {"logs": logs})
 
 
+@login_required
 def notifications(request):
     return render(request, "dashboard/notifications.html")
