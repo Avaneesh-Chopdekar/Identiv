@@ -96,3 +96,50 @@ dialog::backdrop {
 .alert-message {
     font-size: 1.5rem;
 }
+
+.my-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#register-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.camera-section,
+#register-video,
+.form-section {
+    height: 50%;
+    width: 100%;
+}
+
+.form-section {
+    justify-self: end;
+    overflow-y: auto;
+}
+
+@media screen and (min-width: 768px) {
+    .my-container {
+        flex-direction: row;
+    }
+
+    .camera-section,
+    #register-video,
+    .form-section {
+        height: 100%;
+        width: 50%;
+    }
+
+    .form-section {
+        justify-self: end;
+    }
+}

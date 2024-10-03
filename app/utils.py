@@ -3,25 +3,23 @@ import numpy as np
 import dlib
 import base64
 import face_recognition
+from pgvector.django import L2Distance
 
 from app.models import Person
 
 
 def find_person_by_embedding(face_embedding):
-    persons = Person.objects.all()
+    person = Person.objects.order_by(
+        L2Distance("face_embedding", face_embedding)
+    ).first()
 
-    # TODO: Optimize this later
-    for person in persons:
-        # person.face_embedding is assumed to be a vector from pgVector field
-        stored_embedding = np.array(
-            person.face_embedding
-        )  # Convert the stored vector back to numpy array
-        similarity = face_recognition.compare_faces([stored_embedding], face_embedding)
+    is_match = face_recognition.compare_faces([person.face_embedding], face_embedding)
 
-        if similarity[0]:
-            return person
-
-    return None
+    if is_match[0]:
+        return person
+    else:
+        # If no match found or similarity is below threshold
+        return None
 
 
 def extract_image_from_data_uri(data_uri):

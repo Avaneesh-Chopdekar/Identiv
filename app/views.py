@@ -1,14 +1,13 @@
-import base64
-import cv2
-import numpy as np
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
-from django.shortcuts import render
-from face_recognition import face_encodings, compare_faces, load_image_file
-from dashboard.models import LoginLog
+from django.shortcuts import redirect, render
 from datetime import datetime
+from face_recognition import face_encodings
+from app.models import Person
+from app.forms import RegistrationForm
+from dashboard.models import CustomField, LoginLog, PersonDetail
 from antispoofing.test import test
 from .utils import find_person_by_embedding, extract_image_from_data_uri
 
@@ -38,7 +37,9 @@ def face_login(request):
 
         if person:
             # Log the login attempt
-            LoginLog.objects.create(person=person, login_time=datetime.now)
+            LoginLog.objects.create(
+                person=person, login_time=datetime.now, organization=request.user
+            )
             return JsonResponse(
                 {"status": "success", "message": "Logged in successfully!"}
             )
@@ -62,4 +63,57 @@ def index(request):
 
 @login_required
 def register(request):
-    return render(request, "app/register.html")
+    if request.method == "POST":
+        form = RegistrationForm(request.POST, organization=request.user)
+        image_data = request.POST.get("image_data")
+
+        if form.is_valid():
+            person = form.save(commit=False)
+
+            label = test(
+                image_path=image_data,
+                model_dir="./antispoofing/resources/anti_spoof_models",
+                device_id=0,
+            )
+
+            if label != 1:
+                return JsonResponse(
+                    {"status": "error", "message": "Spoofing detected!"}, status=401
+                )
+
+            image = extract_image_from_data_uri(image_data)
+
+            if image is None:
+                return JsonResponse(
+                    {"status": "error", "message": "Invalid image data!"}, status=400
+                )
+
+            face_embedding = face_encodings(image)[0]
+            person.face_embedding = face_embedding
+            person.save()
+
+            # Save custom field responses
+            for custom_field in CustomField.objects.filter(organization=request.user):
+                response_value = form.cleaned_data.get(custom_field.name)
+                if custom_field.field_type in ["Text", "BigText"]:
+                    PersonDetail.objects.create(
+                        person=person,
+                        custom_field=custom_field,
+                        response_text=response_value,
+                    )
+                else:
+                    # For Radio/Checkbox fields
+                    selected_options = form.cleaned_data.get(custom_field.name)
+                    person_detail = PersonDetail.objects.create(
+                        person=person, custom_field=custom_field
+                    )
+                    person_detail.selected_options.set(selected_options)
+
+            return redirect("app_index")  # Redirect to a dashboard after registration
+
+    else:
+        form = RegistrationForm(organization=request.user)
+
+    return render(
+        request, "app/register.html", {"form": form, "organization": request.user}
+    )

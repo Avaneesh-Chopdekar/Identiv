@@ -5,5 +5,73 @@ Register
 {% endblock %}
 
 {% block body %}
-<h1 class="title is-1 has-text-centered has-text-weight-semibold mt-3">Register</h1>
+<div class="my-container">
+    <!-- Camera Section -->
+    <div class="camera-section">
+        <div class="content is-centered">
+            <video id="register-video" autoplay></video>
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-section">
+        <div class="content m-5">
+            <h2 class="title">{{ organization.organization_name }}</h2>
+            <form id="registrationForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Add dynamically generated form fields here -->
+                {% for field in form %}
+                <div class="field">
+                    <label class="label">{{ field.label }}</label>
+                    <div class="control">
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary is-medium" type="submit">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Camera feed setup
+    const video = document.getElementById('register-video');
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.log("Something went wrong: " + err);
+            });
+    }
+
+    // Capture the image and send data URI on form submit
+    document.getElementById('registrationForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const dataUri = canvas.toDataURL('image/png');  // Capture image as Data URI
+
+        // You can now include the image data in the form submission
+        const hiddenImageInput = document.createElement('input');
+        hiddenImageInput.type = 'hidden';
+        hiddenImageInput.name = 'image_data';
+        hiddenImageInput.value = dataUri;
+        this.appendChild(hiddenImageInput);
+
+        this.submit();  // Submit the form
+    });
+</script>
 {% endblock %}
