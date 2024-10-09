@@ -7,7 +7,9 @@ from app.models import Person, Organization
 class LoginLog(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, related_name="login_logs"
+    )
     login_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

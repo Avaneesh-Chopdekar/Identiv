@@ -5,5 +5,48 @@ Login Logs
 {% endblock %}
 
 {% block body %}
-<h2>People Login Logs</h2>
+<section class="section">
+    <div class="container">
+        <h1 class="title">Login Logs</h1>
+        <form method="GET" action="">
+            <div class="field has-addons">
+                <div class="control has-icons-left is-expanded">
+                    <input class="input" type="text" name="search" value="{{ search_query }}"
+                        placeholder="Search by first or last name...">
+                    <span class="icon is-left">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-primary">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table is-striped is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.login_time }}</td>
+                    <td>{{ log.person.first_name }}</td>
+                    <td>{{ log.person.middle_name }}</td>
+                    <td>{{ log.person.last_name }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Nobody logged in.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}

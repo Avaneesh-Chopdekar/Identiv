@@ -64,6 +64,7 @@ def index(request):
 @login_required
 def register(request):
     if request.method == "POST":
+        organization = request.user
         form = RegistrationForm(request.POST, organization=request.user)
         image_data = request.POST.get("image_data")
 
@@ -91,6 +92,7 @@ def register(request):
             face_embedding = face_encodings(image)[0]
             person.face_embedding = face_embedding
             person.save()
+            person.organizations.add(organization)
 
             # Save custom field responses
             for custom_field in CustomField.objects.filter(organization=request.user):

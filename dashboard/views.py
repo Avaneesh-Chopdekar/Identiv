@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
-from dashboard.forms import CustomFieldForm, OptionForm
-from dashboard.models import CustomField, Option, LoginLog
 from app.models import Person
+from dashboard.forms import CustomFieldForm, OptionForm
+from dashboard.models import CustomField, Option, PersonDetail
 
 
 # Create your views here.
@@ -74,31 +76,92 @@ def registration_fields(request):
     # Fetch custom fields created by the logged-in organization
     custom_fields = CustomField.objects.filter(organization=request.user)
     custom_field_form = CustomFieldForm(instance=edit_field_instance)
+
+    context = {
+        "custom_field_form": custom_field_form,
+        "option_form": option_form,
+        "custom_fields": custom_fields,
+        "edit_field_instance": edit_field_instance,  # Pass the field being edited
+    }
+
     # Render the page with the forms and custom fields
     return render(
         request,
         "dashboard/registration_fields.html",  # Make sure the template path matches your folder structure
-        {
-            "custom_field_form": custom_field_form,
-            "option_form": option_form,
-            "custom_fields": custom_fields,
-            "edit_field_instance": edit_field_instance,  # Pass the field being edited
-        },
+        context,
     )
 
 
 @login_required
-def people(request):
-    people = Person.objects.filter(organization=request.user)
-    return render(request, "dashboard/people.html", {"people": people})
+def people_view(request):
+    search_query = request.GET.get("search", "")
+    filters = {}
+
+    # Iterate over GET parameters to capture selected filters
+    for key, value in request.GET.items():
+        if key != "search" and value:
+            filters[key] = value
+
+    # Get current organization
+    organization = request.user
+    
+    # Fetch people from the same organization and apply search filter
+    people = organization.people.filter(
+        Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
+    ).prefetch_related('person_detail__custom_field', 'person_detail__selected_options')
+
+    # Apply custom field filters
+    for field_name, option_value in filters.items():
+        people = people.filter(
+            person_detail__custom_field__name=field_name,
+            person_detail__selected_options__option_name=option_value
+        )
+
+    # Create a dictionary to store person details efficiently
+    people_details = PersonDetail.objects.filter(person__in=people)
+
+    context ={
+        'people': people,
+        "people_details": people_details,
+        'custom_fields': organization.custom_fields.filter(field_type__in=["Radio", "Checkbox"]),
+
+    }
+    return render(request, "dashboard/people.html", context)
 
 
 @login_required
-def logs(request):
-    logs = LoginLog.objects.filter(organization=request.user)
-    return render(request, "dashboard/logs.html", {"logs": logs})
+def logs_view(request):
+    search_query = request.GET.get("search", "").strip()
+    organization = (
+        request.user
+    )  # Assuming the logged-in user belongs to one organization
+
+    # Access people related to the current organization through the Many-to-Many relationship
+    if search_query:
+        # Filter people based on first name or last name and ensure they belong to the current organization
+        logs = organization.login_logs.filter(
+            Q(person__first_name__icontains=search_query)
+            | Q(person__last_name__icontains=search_query)
+        )
+    else:
+        # If no search query, show all people from the current organization
+        logs = organization.login_logs.all()
+
+    context = {"logs": logs, "search_query": search_query}
+    return render(request, "dashboard/logs.html", context)
 
 
 @login_required
-def notifications(request):
+def notifications_view(request):
+    # TODO: Create a database model for storing it and send notification alert via email of organization with a link to notification page in it.
     return render(request, "dashboard/notifications.html")
+
+@login_required
+def delete_person(request, person_id):
+    try:
+        person = Person.objects.get(pk=person_id)
+        person.delete()
+        messages.success(request, "Person deleted successfully.")
+    except Person.DoesNotExist:
+        messages.error(request, "Person not found.")
+    return redirect('people')
