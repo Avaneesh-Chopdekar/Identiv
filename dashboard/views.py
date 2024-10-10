@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from app.models import Person
 from dashboard.forms import CustomFieldForm, OptionForm
-from dashboard.models import CustomField, Option, PersonDetail
+from dashboard.models import Blacklist, CustomField, Notification, Option, PersonDetail
 
 
 # Create your views here.
@@ -151,8 +151,31 @@ def logs_view(request):
 
 @login_required
 def notifications_view(request):
-    # TODO: Create a database model for storing it and send notification alert via email of organization with a link to notification page in it.
-    return render(request, "dashboard/notifications.html")
+    notifications = Notification.objects.filter(organization=request.user)
+
+    if request.method == "POST":
+        notification_id = request.POST["notification_id"]
+        decision = request.POST["decision"]
+        notification = get_object_or_404(Notification, uid=notification_id)
+
+        if decision == "approve":
+            # Add the person to the organization and approve their membership in this specific org
+            notification.organization.people.add(notification.person)
+            notification.person.is_active = True  # Mark as approved for this org
+            notification.person.save()
+        elif decision == "reject":
+            # If rejected, remove from the organization and add to blacklist
+            notification.organization.people.remove(notification.person)
+            Blacklist.objects.create(
+                person=notification.person, organization=notification.organization
+            )
+
+        notification.delete()  # Remove the notification after action is taken
+        return redirect("notifications")  # Reload the page
+
+    return render(
+        request, "dashboard/notifications.html", {"notifications": notifications}
+    )
 
 
 @login_required
@@ -164,3 +187,22 @@ def delete_person(request, person_id):
     except Person.DoesNotExist:
         messages.error(request, "Person not found.")
     return redirect("people")
+
+
+@login_required
+def blacklist(request):
+    search_query = request.GET.get("search", "").strip()
+
+    if search_query:
+        # Filter people based on first name or last name and ensure they belong to the current organization
+        blacklist = Blacklist.objects.filter(
+            Q(person__first_name__icontains=search_query)
+            | Q(person__last_name__icontains=search_query),
+            organization=request.user,
+        ).order_by("-blacklisted_on")
+    else:
+        # If no search query, show all people from the current organization
+        blacklist = Blacklist.objects.all().order_by("-blacklisted_on")
+
+    context = {"blacklist": blacklist, "search_query": search_query}
+    return render(request, "dashboard/blacklist.html", context)

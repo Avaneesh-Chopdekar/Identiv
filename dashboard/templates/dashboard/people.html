@@ -31,8 +31,9 @@ People
                                 <select name="{{ custom_field.name }}">
                                     <option value="">Select {{ custom_field.name }}</option>
                                     {% for option in custom_field.options.all %}
-                                    <option value="{{ option.option_name }}" 
-                                    {% if request.GET|get_query_param:custom_field.name == option.option_name %} selected {% endif %}>
+                                    <option value="{{ option.option_name }}" {% if
+                                        request.GET|get_query_param:custom_field.name==option.option_name %} selected {%
+                                        endif %}>
                                         {{ option.option_name }}
                                     </option>
                                     {% endfor %}
@@ -61,6 +62,7 @@ People
                         {% endif %}
                         {% endfor %}
                         {% endfor %}
+                        <th>Active</th>
                         <th>Delete</th>
                     </tr>
                 </thead>
@@ -79,6 +81,17 @@ People
                         </td>
                         {% endif %}
                         {% endfor %}
+                        <td>
+                            {% if person.is_active %}
+                            <span class="icon has-text-success">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            {% else %}
+                            <span class="icon has-text-danger">
+                                <i class="fas fa-times"></i>
+                            </span>
+                            {% endif %}
+                        </td>
                         <td>
                             <form action="{% url 'delete_person' person.uid %}" method="POST">
                                 {% csrf_token %}

@@ -31,6 +31,7 @@ class Person(models.Model):
     middle_name = models.CharField(max_length=50, blank=True, null=True)
     last_name = models.CharField(max_length=50)
     face_embedding = VectorField(dimensions=128)
+    is_active = models.BooleanField(default=False)  # To prevent login if registration not accepted
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

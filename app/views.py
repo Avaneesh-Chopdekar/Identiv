@@ -41,6 +41,23 @@ def face_login(request):
         person = find_person_by_embedding(face_embedding, request.user)
 
         if person:
+            organization = request.user  # Assuming the current organization context
+            if not person.organizations.filter(pk=organization.pk).exists():
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "message": "You are not a member of this organization",
+                    }
+                )
+
+            if not person.is_active:
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "message": "You cannot login until your registration is accepted by the organization.",
+                    }
+                )
+
             # Log the login attempt
             LoginLog.objects.create(
                 person=person, login_time=datetime.now, organization=request.user

@@ -69,3 +69,32 @@ class PersonDetail(models.Model):
 
     def __str__(self):
         return f"Response of {self.person.first_name} {self.person.last_name} to {self.custom_field.name} from {self.custom_field.organization.organization_name}"
+
+
+class Notification(models.Model):
+    PENDING = "Pending"
+    ACCEPTED = "Accepted"
+    REJECTED = "Rejected"
+
+    STATUS_CHOICES = [
+        (PENDING, "Pending"),
+        (ACCEPTED, "Accepted"),
+        (REJECTED, "Rejected"),
+    ]
+
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.organization} from {self.person}"
+
+
+class Blacklist(models.Model):
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    blacklisted_on = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField(null=True, blank=True)

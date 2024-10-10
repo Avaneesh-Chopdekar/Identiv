@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import dlib
 import base64
 import face_recognition
 from pgvector.django import L2Distance
@@ -9,6 +8,12 @@ from app.models import Person
 
 
 def find_person_by_embedding(face_embedding, organization=None):
+
+    if (
+        Person.objects.count() == 0
+        or Person.objects.filter(organizations=organization).count() == 0
+    ):
+        return None
 
     if organization is None:
         person = Person.objects.order_by(

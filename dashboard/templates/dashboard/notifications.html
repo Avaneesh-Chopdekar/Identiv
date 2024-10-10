@@ -5,5 +5,55 @@ Notifications
 {% endblock %}
 
 {% block body %}
-<h2>Notifications List</h2>
+<section class="section">
+    <div class="container">
+        <h1 class="title">Registration Requests</h1>
+
+        {% if notifications %}
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Person</th>
+                    <th>Request Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notification in notifications %}
+                <tr>
+                    <td>{{ notification.person.first_name }} {{ notification.person.middle_name }}
+                        {{ notification.person.last_name }}</td>
+                    <td>{{ notification.created_at }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'notifications' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="notification_id" value="{{ notification.uid }}">
+
+                            <div class="buttons">
+                                <!-- Approve button -->
+                                <button type="submit" name="decision" value="approve"
+                                    class="button is-success is-small">
+                                    <span class="icon"><i class="fas fa-check"></i></span>
+                                    <span>Approve</span>
+                                </button>
+
+                                <!-- Reject button -->
+                                <button type="submit" name="decision" value="reject" class="button is-danger is-small">
+                                    <span class="icon"><i class="fas fa-times"></i></span>
+                                    <span>Reject</span>
+                                </button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="notification is-warning">
+            No pending registration requests.
+        </div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}
