@@ -39,6 +39,4 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
-    # Dashboard Routes
-    path("dashboard/", dashboard_views.index, name="dashboard"),
 ]

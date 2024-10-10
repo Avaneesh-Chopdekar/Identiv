@@ -10,11 +10,6 @@ from dashboard.models import CustomField, Option, PersonDetail
 
 # Create your views here.
 @login_required
-def index(request):
-    return render(request, "dashboard/index.html")
-
-
-@login_required
 def registration_fields(request):
     """
     Handle form submission for creating custom fields and adding options to them.
