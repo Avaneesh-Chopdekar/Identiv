@@ -104,27 +104,30 @@ def people_view(request):
 
     # Get current organization
     organization = request.user
-    
+
     # Fetch people from the same organization and apply search filter
     people = organization.people.filter(
         Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
-    ).prefetch_related('person_detail__custom_field', 'person_detail__selected_options')
+    ).prefetch_related("person_detail__custom_field", "person_detail__selected_options")
 
     # Apply custom field filters
     for field_name, option_value in filters.items():
         people = people.filter(
             person_detail__custom_field__name=field_name,
-            person_detail__selected_options__option_name=option_value
+            person_detail__selected_options__option_name=option_value,
         )
 
     # Create a dictionary to store person details efficiently
-    people_details = PersonDetail.objects.filter(person__in=people)
+    people_details = PersonDetail.objects.filter(
+        person__in=people, custom_field__organization=organization
+    )
 
-    context ={
-        'people': people,
+    context = {
+        "people": people,
         "people_details": people_details,
-        'custom_fields': organization.custom_fields.filter(field_type__in=["Radio", "Checkbox"]),
-
+        "custom_fields": organization.custom_fields.filter(
+            field_type__in=["Radio", "Checkbox"]
+        ),
     }
     return render(request, "dashboard/people.html", context)
 
@@ -142,10 +145,10 @@ def logs_view(request):
         logs = organization.login_logs.filter(
             Q(person__first_name__icontains=search_query)
             | Q(person__last_name__icontains=search_query)
-        )
+        ).order_by("-login_time")
     else:
         # If no search query, show all people from the current organization
-        logs = organization.login_logs.all()
+        logs = organization.login_logs.all().order_by("-login_time")
 
     context = {"logs": logs, "search_query": search_query}
     return render(request, "dashboard/logs.html", context)
@@ -156,6 +159,7 @@ def notifications_view(request):
     # TODO: Create a database model for storing it and send notification alert via email of organization with a link to notification page in it.
     return render(request, "dashboard/notifications.html")
 
+
 @login_required
 def delete_person(request, person_id):
     try:
@@ -164,4 +168,4 @@ def delete_person(request, person_id):
         messages.success(request, "Person deleted successfully.")
     except Person.DoesNotExist:
         messages.error(request, "Person not found.")
-    return redirect('people')
+    return redirect("people")

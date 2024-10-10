@@ -32,8 +32,13 @@ def face_login(request):
 
         face_embedding = face_encodings(image)[0]
 
+        if face_embedding is None:
+            return JsonResponse(
+                {"status": "error", "message": "No face detected!"}, status=400
+            )
+
         # Now, search for the person by embedding
-        person = find_person_by_embedding(face_embedding)
+        person = find_person_by_embedding(face_embedding, request.user)
 
         if person:
             # Log the login attempt
@@ -69,8 +74,6 @@ def register(request):
         image_data = request.POST.get("image_data")
 
         if form.is_valid():
-            person = form.save(commit=False)
-
             label = test(
                 image_path=image_data,
                 model_dir="./antispoofing/resources/anti_spoof_models",
@@ -90,8 +93,19 @@ def register(request):
                 )
 
             face_embedding = face_encodings(image)[0]
-            person.face_embedding = face_embedding
-            person.save()
+
+            if face_embedding is None:
+                return JsonResponse(
+                    {"status": "error", "message": "No face detected!"}, status=400
+                )
+
+            person = find_person_by_embedding(face_embedding)
+
+            if person is None:
+                person = form.save(commit=False)
+                person.face_embedding = face_embedding
+                person.save()
+
             person.organizations.add(organization)
 
             # Save custom field responses

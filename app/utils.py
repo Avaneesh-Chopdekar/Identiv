@@ -8,10 +8,18 @@ from pgvector.django import L2Distance
 from app.models import Person
 
 
-def find_person_by_embedding(face_embedding):
-    person = Person.objects.order_by(
-        L2Distance("face_embedding", face_embedding)
-    ).first()
+def find_person_by_embedding(face_embedding, organization=None):
+
+    if organization is None:
+        person = Person.objects.order_by(
+            L2Distance("face_embedding", face_embedding)
+        ).first()
+    else:
+        person = (
+            Person.objects.filter(organizations=organization)
+            .order_by(L2Distance("face_embedding", face_embedding))
+            .first()
+        )
 
     is_match = face_recognition.compare_faces([person.face_embedding], face_embedding)
 

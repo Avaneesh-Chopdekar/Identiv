@@ -47,7 +47,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("index")
+            return redirect("registration_fields")
     else:
         form = forms.OrganizationCreationForm()
     return render(request, "onboarding/signup.html", {"form": form})
