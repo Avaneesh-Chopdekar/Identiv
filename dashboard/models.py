@@ -69,16 +69,3 @@ class PersonDetail(models.Model):
 
     def __str__(self):
         return f"Response of {self.person.first_name} {self.person.last_name} to {self.custom_field.name} from {self.custom_field.organization.organization_name}"
-
-
-class Feedback(models.Model):
-    organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="feedbacks"
-    )
-    person = models.ForeignKey(
-        Person, on_delete=models.CASCADE, related_name="feedbacks"
-    )
-    custom_fields = models.ManyToManyField(CustomField)
-
-    def __str__(self):
-        return f"Feedback from {self.person.first_name} {self.person.last_name} for {self.organization.organization_name}"
