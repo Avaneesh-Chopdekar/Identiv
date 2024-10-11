@@ -9,7 +9,7 @@ from app.models import Person
 from app.forms import RegistrationForm
 from dashboard.models import CustomField, LoginLog, PersonDetail
 from antispoofing.test import test
-from .utils import find_person_by_embedding, extract_image_from_data_uri
+from .utils import find_person_by_embedding, extract_image_from_data_uri, is_blacklisted
 
 
 @login_required
@@ -39,6 +39,11 @@ def face_login(request):
 
         # Now, search for the person by embedding
         person = find_person_by_embedding(face_embedding, request.user)
+
+        if is_blacklisted(face_embedding, request.user):
+            return JsonResponse(
+                {"status": "error", "message": "You are blacklisted!"}, status=401
+            )
 
         if person:
             organization = request.user  # Assuming the current organization context
@@ -117,6 +122,11 @@ def register(request):
                 )
 
             person = find_person_by_embedding(face_embedding)
+
+            if is_blacklisted(face_embedding, request.user):
+                return JsonResponse(
+                    {"status": "error", "message": "You are blacklisted!"}, status=401
+                )
 
             if person is None:
                 person = form.save(commit=False)

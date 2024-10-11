@@ -5,6 +5,7 @@ import face_recognition
 from pgvector.django import L2Distance
 
 from app.models import Person
+from dashboard.models import Blacklist
 
 
 def find_person_by_embedding(face_embedding, organization=None):
@@ -33,6 +34,16 @@ def find_person_by_embedding(face_embedding, organization=None):
     else:
         # If no match found or similarity is below threshold
         return None
+
+
+def is_blacklisted(face_embedding, organization):
+    blacklisted = (
+        Blacklist.objects.filter(organization=organization)
+        .order_by(L2Distance("person__face_embedding", face_embedding))
+        .first()
+    )
+
+    return True if blacklisted else False
 
 
 def extract_image_from_data_uri(data_uri):
