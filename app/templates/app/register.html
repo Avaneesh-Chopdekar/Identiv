@@ -39,6 +39,19 @@ Register
     </div>
 </div>
 
+<!-- Dialog Notification -->
+<dialog id="notification-dialog">
+    <article class="message">
+        <div class="message-header">
+            <p>Notification</p>
+            <button class="delete" aria-label="close" id="close-notification"></button>
+        </div>
+        <div class="message-body alert-message">
+            <!-- The notification message will be injected here -->
+        </div>
+    </article>
+</dialog>
+
 <script>
     // Camera feed setup
     const video = document.getElementById('register-video');
@@ -52,26 +65,76 @@ Register
             });
     }
 
-    // Capture the image and send data URI on form submit
+    const dialog = document.getElementById("notification-dialog");
+    const dialogMessageBox = document.querySelector(".message");
+    const dialogMessageBody = document.querySelector(".message-body");
+    const closeNotificationBtn = document.getElementById("close-notification");
+
+    // Close dialog functionality
+    closeNotificationBtn.addEventListener('click', function () {
+        dialog.close();
+    });
+
+    // Capture image and submit via AJAX
     document.getElementById('registrationForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
+        // Capture image from video
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         const context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        const dataUri = canvas.toDataURL('image/png');  // Capture image as Data URI
+        const dataUri = canvas.toDataURL('image/jpeg');  // Capture image as Data URI
 
-        // You can now include the image data in the form submission
-        const hiddenImageInput = document.createElement('input');
-        hiddenImageInput.type = 'hidden';
-        hiddenImageInput.name = 'image_data';
-        hiddenImageInput.value = dataUri;
-        this.appendChild(hiddenImageInput);
+        // Prepare form data including the image data URI
+        const formData = new FormData(this);
+        formData.append('image_data', dataUri);
 
-        this.submit();  // Submit the form
+        // Send the form data via AJAX
+        fetch('{% url "register" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json()) // Assuming the server returns JSON
+            .then(data => {
+                // Show modal with the response message
+                if (!dialog.open) {
+                    if (data.status === "error") {
+                        dialogMessageBox.classList.add("is-danger");
+                        dialogMessageBox.classList.remove("is-success");
+                    } else if (data.status === "success") {
+                        dialogMessageBox.classList.add("is-success");
+                        dialogMessageBox.classList.remove("is-danger");
+
+                        // Redirect on successful registration
+                        setTimeout(() => {
+                            window.location.href = "{% url 'app_index' %}";
+                        }, 3000);  // Redirect after 3 seconds
+                    }
+
+                    dialogMessageBody.textContent = data.message;
+                    dialog.showModal();
+
+                    setTimeout(() => {
+                        dialog.close();
+                    }, 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                dialogMessageBox.classList.add("is-danger");
+                dialogMessageBody.textContent = "An unexpected error occurred. Please try again.";
+                dialog.showModal();
+
+                setTimeout(() => {
+                    dialog.close();
+                }, 5000);
+            });
     });
 </script>
 {% endblock %}

@@ -5,7 +5,7 @@ import face_recognition
 from pgvector.django import L2Distance
 
 from app.models import Person
-from dashboard.models import Blacklist
+from dashboard.models import Blacklist, Notification
 
 
 def find_person_by_embedding(face_embedding, organization=None):
@@ -44,6 +44,16 @@ def is_blacklisted(face_embedding, organization):
     )
 
     return True if blacklisted else False
+
+
+def has_already_sent_registration_request(face_embedding, organization):
+    notification_exists = (
+        Notification.objects.filter(organization=organization)
+        .order_by(L2Distance("person__face_embedding", face_embedding))
+        .first()
+    )
+
+    return True if notification_exists else False
 
 
 def extract_image_from_data_uri(data_uri):

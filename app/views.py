@@ -9,7 +9,12 @@ from app.models import Person
 from app.forms import RegistrationForm
 from dashboard.models import CustomField, LoginLog, PersonDetail
 from antispoofing.test import test
-from .utils import find_person_by_embedding, extract_image_from_data_uri, is_blacklisted
+from .utils import (
+    find_person_by_embedding,
+    extract_image_from_data_uri,
+    has_already_sent_registration_request,
+    is_blacklisted,
+)
 
 
 @login_required
@@ -45,21 +50,23 @@ def face_login(request):
                 {"status": "error", "message": "You are blacklisted!"}, status=401
             )
 
+        if has_already_sent_registration_request(face_embedding, request.user):
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "You cannot login until your registration is accepted by the organization.",
+                },
+                status=400,
+            )
+
         if person:
             organization = request.user  # Assuming the current organization context
+
             if not person.organizations.filter(pk=organization.pk).exists():
                 return JsonResponse(
                     {
                         "status": "error",
                         "message": "You are not a member of this organization",
-                    }
-                )
-
-            if not person.is_active:
-                return JsonResponse(
-                    {
-                        "status": "error",
-                        "message": "You cannot login until your registration is accepted by the organization.",
                     }
                 )
 
@@ -128,6 +135,15 @@ def register(request):
                     {"status": "error", "message": "You are blacklisted!"}, status=401
                 )
 
+            if has_already_sent_registration_request(face_embedding, request.user):
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "message": "You have already sent a registration request to this organization.",
+                    },
+                    status=400,
+                )
+
             if person is None:
                 person = form.save(commit=False)
                 person.face_embedding = face_embedding
@@ -152,7 +168,12 @@ def register(request):
                     )
                     person_detail.selected_options.set(selected_options)
 
-            return redirect("app_index")  # Redirect to a dashboard after registration
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": "You can login after organization approves your registration request!",
+                }
+            )
 
     else:
         form = RegistrationForm(organization=request.user)

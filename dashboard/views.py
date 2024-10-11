@@ -193,11 +193,6 @@ def delete_person(request, person_id):
 def blacklist(request):
     search_query = request.GET.get("search", "").strip()
 
-    if request.method == "POST":
-        blacklisted_person_id = request.POST["blacklisted_person_id"]
-        Blacklist.objects.get(pk=blacklisted_person_id).delete()
-        return redirect("blacklist")
-
     if search_query:
         # Filter people based on first name or last name and ensure they belong to the current organization
         blacklist = Blacklist.objects.filter(
