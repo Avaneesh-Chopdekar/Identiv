@@ -55,12 +55,8 @@ People
                 <thead>
                     <tr>
                         <th>Name</th>
-                        {% for person in people %}
                         {% for detail in people_details %}
-                        {% if detail.person == person %}
                         <th>{{ detail.custom_field.name }}</th>
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                         <th>Active</th>
                         <th>Delete</th>

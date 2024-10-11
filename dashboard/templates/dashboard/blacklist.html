@@ -30,6 +30,8 @@ Blacklist
                     <th>First Name</th>
                     <th>Middle Name</th>
                     <th>Last Name</th>
+                    <th>Unblock</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,6 +41,20 @@ Blacklist
                     <td>{{ blacklisted_person.person.first_name }}</td>
                     <td>{{ blacklisted_person.person.middle_name }}</td>
                     <td>{{ blacklisted_person.person.last_name }}</td>
+                    <td>
+                        <form action="{% url 'blacklist' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="blacklisted_person_id" id="blacklisted_person_id"
+                                value="{{ blacklisted_person.uid }}">
+                            <button type="submit" class="button is-danger is-small">Unblock</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url 'delete_person' blacklisted_person.person.uid %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="button is-danger is-small">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
