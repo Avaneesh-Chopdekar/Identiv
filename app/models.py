@@ -23,6 +23,10 @@ class Organization(AbstractUser):
     def __str__(self):
         return f"{self.organization_name} | {self.email}"
 
+    class Meta:
+        verbose_name = "Organization"
+        verbose_name_plural = "Organizations"
+
 
 class Person(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -43,6 +47,7 @@ class Person(models.Model):
             return f"{self.first_name} {self.last_name}"
 
     class Meta:
+        verbose_name_plural = "People"
         indexes = [
             models.Index(fields=["face_embedding"]),
             models.Index(fields=["first_name", "last_name"]),

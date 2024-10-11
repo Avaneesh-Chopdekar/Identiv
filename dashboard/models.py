@@ -98,3 +98,6 @@ class Blacklist(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     blacklisted_on = models.DateTimeField(auto_now_add=True)
     reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Blacklisted People"
