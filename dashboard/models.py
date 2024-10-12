@@ -99,5 +99,8 @@ class Blacklist(models.Model):
     blacklisted_on = models.DateTimeField(auto_now_add=True)
     reason = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return f"Blacklisted {self.person} from {self.organization}"
+
     class Meta:
         verbose_name_plural = "Blacklisted People"
