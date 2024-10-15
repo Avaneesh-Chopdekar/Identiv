@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+import posthog
 
 from app.models import Person
 from dashboard.forms import CustomFieldForm, OptionForm
@@ -29,6 +30,16 @@ def registration_fields(request):
                     request.user
                 )  # Assign the current organization
                 custom_field.save()
+                posthog.capture(
+                    request.user.uid,  # The unique identifier of the user (can be the user's ID or email)
+                    "dashboard:organization:create_custom_field",  # The event name
+                    {
+                        "organization_name": request.user.organization_name,
+                        "custom_field_id": custom_field.uid,
+                        "custom_field_name": custom_field.name,
+                        "custom_field_type": custom_field.field_type,
+                    },
+                )
                 return redirect("registration_fields")  # Redirect to the same view
 
         # Handle form submission for adding options to a custom field
@@ -46,17 +57,48 @@ def registration_fields(request):
                     custom_field  # Link the option to the custom field
                 )
                 option.save()
+                posthog.capture(
+                    request.user.uid,  # The unique identifier of the user (can be the user's ID or email)
+                    "dashboard:organization:create_option_for_custom_field",  # The event name
+                    {
+                        "organization_name": request.user.organization_name,
+                        "custom_field_id": custom_field.uid,
+                        "custom_field_name": custom_field.name,
+                        "custom_field_type": custom_field.field_type,
+                        "option_id": option.id,
+                        "option_name": option.option_name,
+                    },
+                )
                 return redirect("registration_fields")  # Redirect to the same view
 
         # Handle deleting a custom field
         elif "delete_field" in request.POST:
             field = get_object_or_404(CustomField, uid=request.POST["field_id"])
+            posthog.capture(
+                request.user.uid,  # The unique identifier of the user (can be the user's ID or email)
+                "dashboard:organization:delete_custom_field",  # The event name
+                {
+                    "organization_name": request.user.organization_name,
+                    "custom_field_id": field.uid,
+                    "custom_field_name": field.name,
+                    "custom_field_type": field.field_type,
+                },
+            )
             field.delete()
             return redirect("registration_fields")
 
         # Handle deleting an option
         elif "delete_option" in request.POST:
             option = get_object_or_404(Option, id=request.POST["option_id"])
+            posthog.capture(
+                request.user.uid,  # The unique identifier of the user (can be the user's ID or email)
+                "dashboard:organization:delete_option_for_custom_field",  # The event name
+                {
+                    "organization_name": request.user.organization_name,
+                    "option_id": option.id,
+                    "option_name": option.option_name,
+                },
+            )
             option.delete()
             return redirect("registration_fields")
 
@@ -66,6 +108,16 @@ def registration_fields(request):
             custom_field_form = CustomFieldForm(request.POST, instance=field)
             if custom_field_form.is_valid():
                 custom_field_form.save()
+                posthog.capture(
+                    request.user.uid,  # The unique identifier of the user (can be the user's ID or email)
+                    "dashboard:organization:edit_custom_field",  # The event name
+                    {
+                        "organization_name": request.user.organization_name,
+                        "custom_field_id": custom_field.uid,
+                        "custom_field_name": custom_field.name,
+                        "custom_field_type": custom_field.field_type,
+                    },
+                )
                 return redirect("registration_fields")
 
     # Fetch custom fields created by the logged-in organization
@@ -163,11 +215,31 @@ def notifications_view(request):
             notification.organization.people.add(notification.person)
             notification.person.is_active = True  # Mark as approved for this org
             notification.person.save()
+            posthog.capture(
+                notification.person.uid,  # The unique identifier of the user (can be the user's ID or email)
+                "dashboard:person:registration_request_approved",  # The event name
+                {
+                    "first_name": notification.person.first_name,
+                    "middle_name": notification.person.middle_name,
+                    "last_name": notification.person.last_name,
+                    "organization_name": request.user.organization_name,
+                },
+            )
         elif decision == "reject":
             # If rejected, remove from the organization and add to blacklist
             notification.organization.people.remove(notification.person)
             Blacklist.objects.create(
                 person=notification.person, organization=notification.organization
+            )
+            posthog.capture(
+                notification.person.uid,  # The unique identifier of the user (can be the user's ID or email)
+                "dashboard:person:blacklisted",  # The event name
+                {
+                    "first_name": notification.person.first_name,
+                    "middle_name": notification.person.middle_name,
+                    "last_name": notification.person.last_name,
+                    "organization_name": request.user.organization_name,
+                },
             )
 
         notification.delete()  # Remove the notification after action is taken
@@ -182,6 +254,16 @@ def notifications_view(request):
 def delete_person(request, person_id):
     try:
         person = Person.objects.get(pk=person_id)
+        posthog.capture(
+            person.uid,  # The unique identifier of the user (can be the user's ID or email)
+            "dashboard:person:removed_from_organization",  # The event name
+            {
+                "first_name": person.first_name,
+                "middle_name": person.middle_name,
+                "last_name": person.last_name,
+                "organization_name": request.user.organization_name,
+            },
+        )
         person.delete()
         messages.success(request, "Person deleted successfully.")
     except Person.DoesNotExist:

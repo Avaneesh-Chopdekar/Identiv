@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 import environ
+import posthog
 import sentry_sdk
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +41,10 @@ DEBUG = ENVIRONMENT == "dev"
 AUTH_USER_MODEL = "app.Organization"
 
 LOGIN_REDIRECT_URL = "/app/"
+
+posthog.api_key = env("POSTHOG_API_KEY")
+posthog.host = env("POSTHOG_HOST", default="https://us.i.posthog.com")
+
 
 # Additional settings based on the environment
 if ENVIRONMENT == "prod":

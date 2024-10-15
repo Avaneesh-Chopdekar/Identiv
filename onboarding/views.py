@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from app.models import Organization
 from . import forms
+import posthog
 
 
 # Create your views here.
@@ -47,6 +48,11 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            posthog.capture(
+                user.uid,  # The unique identifier of the user (can be the user's ID or email)
+                "organization:create_account",  # The event name
+                {"organization_name": user.organization_name, "email": user.email},
+            )
             return redirect("registration_fields")
     else:
         form = forms.OrganizationCreationForm()
@@ -71,6 +77,11 @@ def logout_view(request):
 def delete_account(request):
     user = request.user
     if request.method == "POST":
+        posthog.capture(
+            user.uid,  # The unique identifier of the user (can be the user's ID or email)
+            "organization:deleted_account",  # The event name
+            {"organization_name": user.organization_name},
+        )
         user.delete()
         logout(request)
         return redirect("signup")
