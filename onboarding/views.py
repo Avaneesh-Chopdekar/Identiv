@@ -90,11 +90,13 @@ def delete_account(request):
 
 @login_required
 def account(request):
+    posthog.capture(request.user.uid, "$pageview")
     return render(request, "onboarding/account.html")
 
 
 @login_required
 def edit_account(request):
+    posthog.capture(request.user.uid, "$pageview")
     user = request.user
     if request.method == "POST":
         form = forms.EditOrganizationDetailsForm(request.POST, instance=user)

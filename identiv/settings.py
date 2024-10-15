@@ -44,7 +44,7 @@ LOGIN_REDIRECT_URL = "/app/"
 
 posthog.api_key = env("POSTHOG_API_KEY")
 posthog.host = env("POSTHOG_HOST", default="https://us.i.posthog.com")
-
+posthog.debug = DEBUG
 
 # Additional settings based on the environment
 if ENVIRONMENT == "prod":

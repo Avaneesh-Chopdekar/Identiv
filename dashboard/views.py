@@ -20,6 +20,8 @@ def registration_fields(request):
     option_form = OptionForm()
     edit_field_instance = None  # To track the field being edited
 
+    posthog.capture(request.user.uid, "$pageview")
+
     if request.method == "POST":
         # Handle form submission for creating a new custom field
         if "create_field" in request.POST:
@@ -144,6 +146,8 @@ def people_view(request):
     search_query = request.GET.get("search", "")
     filters = {}
 
+    posthog.capture(request.user.uid, "$pageview")
+
     # Iterate over GET parameters to capture selected filters
     for key, value in request.GET.items():
         if key != "search" and value:
@@ -186,6 +190,8 @@ def logs_view(request):
         request.user
     )  # Assuming the logged-in user belongs to one organization
 
+    posthog.capture(request.user.uid, "$pageview")
+
     # Access people related to the current organization through the Many-to-Many relationship
     if search_query:
         # Filter people based on first name or last name and ensure they belong to the current organization
@@ -204,6 +210,8 @@ def logs_view(request):
 @login_required
 def notifications_view(request):
     notifications = Notification.objects.filter(organization=request.user)
+
+    posthog.capture(request.user.uid, "$pageview")
 
     if request.method == "POST":
         notification_id = request.POST["notification_id"]
@@ -274,6 +282,8 @@ def delete_person(request, person_id):
 @login_required
 def blacklist(request):
     search_query = request.GET.get("search", "").strip()
+
+    posthog.capture(request.user.uid, "$pageview")
 
     if search_query:
         # Filter people based on first name or last name and ensure they belong to the current organization

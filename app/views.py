@@ -155,6 +155,7 @@ def face_login(request):
 # Create your views here.
 @login_required
 def index(request):
+    posthog.capture(request.user.uid, "$pageview")
     return render(
         request, "app/index.html", {"organization_name": request.user.organization_name}
     )
@@ -162,6 +163,7 @@ def index(request):
 
 @login_required
 def register(request):
+    posthog.capture(request.user.uid, "$pageview")
     if request.method == "POST":
         organization = request.user
         form = RegistrationForm(request.POST, organization=request.user)
