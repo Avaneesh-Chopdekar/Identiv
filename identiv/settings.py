@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "onboarding",
     "app",
     "dashboard",
@@ -71,6 +72,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -190,3 +192,9 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
     environment="development" if ENVIRONMENT == "dev" else "production",
 )
+
+CORS_ALLOWED_ORIGINS = [
+    "https://identiv.com",  # update this with your domain
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
