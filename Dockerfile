@@ -31,8 +31,15 @@ COPY . /app/
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Run migrations
+# Run migrations and collect static files
 RUN python manage.py migrate
+RUN python manage.py collectstatic --noinput
+
+# Run unit tests for models and forms
+RUN python manage.py test
+
+# Set environment variable for Sentry DSN
+ENV SENTRY_DSN=${SENTRY_DSN}
 
 # Run the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

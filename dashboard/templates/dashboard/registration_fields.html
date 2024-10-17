@@ -1,0 +1,103 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}
+Registration Fields
+{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <h1 class="title mb-3">Manage Registration Fields</h1>
+
+        <!-- Form to Create a New Custom Field -->
+        <h2 class="subtitle">Create Custom Field</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_name">Field Name</label>
+                <div class="control">
+                    {{ custom_field_form.name }}
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_field_type">Field Type</label>
+                <div class="control">
+                    <div class="select">
+                        {{ custom_field_form.field_type }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary" name="create_field" type="submit">Add Field</button>
+                </div>
+            </div>
+        </form>
+        <hr>
+
+        <!-- Existing custom fields and form to add options -->
+        <h2 class="subtitle">Existing Custom Fields</h2>
+        {% for field in custom_fields %}
+        <div class="card">
+            <div class="card-content">
+                <h3 class="title is-5">{{ field.name }}</h3>
+                <p class="subtitle is-6">Type: {{ field.field_type }}</p>
+
+                <!-- Edit Custom Field -->
+                <form method="POST" class="edit-field-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="field_id" value="{{ field.uid }}">
+                    <div class="field">
+                        <label class="label" for="id_name">Field Name</label>
+                        <div class="control">
+                            {{ custom_field_form.name }}
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_field_type">Field Type</label>
+                        <div class="control">
+                            <div class="select">
+                                {{ custom_field_form.field_type }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" name="edit_field" class="button is-info">Edit Field</button>
+                </form>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="field_id" value="{{ field.uid }}">
+                    <button type="submit" name="delete_field" class="button is-danger">Delete Field</button>
+                </form>
+                {% if field.field_type in "Radio Checkbox" %}
+                <hr>
+                <ul>
+                    {% for option in field.options.all %}
+                    <li>{{ option.option_name }}</li>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="option_id" value="{{ option.id }}">
+                        <button type="submit" name="delete_option" class="button is-danger is-small">Delete
+                            Option</button>
+                    </form>
+                    {% empty %}
+                    <li>No options added yet.</li>
+                    {% endfor %}
+                </ul>
+                <form method="POST" class="option-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="field_id" value="{{ field.uid }}">
+                    {{ option_form.as_p }}
+                    <button type="submit" name="add_option" class="button is-info is-small my-3">Add
+                        Option</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+</section>
+{% endblock %}

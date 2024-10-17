@@ -1,0 +1,106 @@
+{% extends 'dashboard/base.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+People
+{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="columns is-mobile">
+            <!-- Search Bar -->
+            <div class="column is-12">
+                <form method="GET" action="{% url 'people' %}" id="filter-form">
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            <input class="input" type="search" name="search" placeholder="Search by name"
+                                value="{{ request.GET.search|default_if_none:'' }}">
+                            <span class="icon is-left">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.field_type == "Radio" or custom_field.field_type == "Checkbox" %}
+                    <div class="field">
+                        <label class="label">{{ custom_field.name }}</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="{{ custom_field.name }}">
+                                    <option value="">Select {{ custom_field.name }}</option>
+                                    {% for option in custom_field.options.all %}
+                                    <option value="{{ option.option_name }}" {% if
+                                        request.GET|get_query_param:custom_field.name==option.option_name %} selected {%
+                                        endif %}>
+                                        {{ option.option_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <button class="button is-primary" type="submit">Filter</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- People list with their details -->
+        {% if people %}
+        <div class="table-container">
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        {% for detail in people_details %}
+                        <th>{{ detail.custom_field.name }}</th>
+                        {% endfor %}
+                        <th>Active</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in people %}
+                    <tr>
+                        <td>{{ person.first_name }} {{ person.middle_name }} {{ person.last_name }}</td>
+                        {% for detail in people_details %}
+                        {% if detail.person == person %}
+                        <td>
+                            {% if detail.response_text %}
+                            {{ detail.response_text }}
+                            {% elif detail.selected_options.all %}
+                            {{ detail.selected_options.all|option_names }}
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                        {% endfor %}
+                        <td>
+                            {% if person.is_active %}
+                            <span class="icon has-text-success">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            {% else %}
+                            <span class="icon has-text-danger">
+                                <i class="fas fa-times"></i>
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{% url 'delete_person' person.uid %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="button is-danger is-small">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No people found.</p>
+        {% endif %}
+</section>
+{% endblock %}

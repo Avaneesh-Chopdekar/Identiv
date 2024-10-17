@@ -1,0 +1,17 @@
+{% extends 'onboarding/base.html' %}
+
+{% block title %}
+Signup | Identiv
+{% endblock %}
+
+{% block body %}
+<h1 class="title is-1 has-text-centered has-text-weight-semibold mt-3">Create an account</h1>
+<p class="is-size-4 has-text-centered has-text-weight-semibold">
+    If you already have an account, <a href="{% url 'login' %}">Login</a>.
+</p>
+<form method="post" class="container">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button is-primary is-medium my-5">Sign Up</button>
+</form>
+{% endblock %}

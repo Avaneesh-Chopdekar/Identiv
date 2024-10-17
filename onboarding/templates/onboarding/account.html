@@ -1,0 +1,42 @@
+{% extends 'onboarding/base.html' %}
+
+{% block title %}
+Your Account | Identiv
+{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <div class="box">
+                    <p class="title is-4">{{ user.organization_name }}</p>
+                    <p class="subtitle is-6 mt-3">{{ user.email }}</p>
+                </div>
+
+                <hr>
+
+                <div class="content">
+                    <p>
+                        <strong>Phone Number:</strong> {{ user.phone_number }}
+                    </p>
+                    <p>
+                        <strong>Address:</strong> {{ user.address }}
+                    </p>
+
+                    <div class="my-5">
+                        <a href="{% url 'registration_fields' %}" class="button is-primary mb-3">Dashboard</a>
+                        <a href="{% url 'password_reset' %}" class="button is-warning mx-3 mb-3">
+                            Reset Password
+                        </a>
+                        <a href="{% url 'edit_account' %}" class="button is-info mr-3 mb-3">Edit Account</a>
+                        <a href="{% url 'delete_account' %}" class="button is-danger mb-3">Delete
+                            Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}

@@ -21,6 +21,12 @@ from django.conf.urls.static import static
 from . import settings
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("developer-admin/", admin.site.urls),
+    path("", include("onboarding.urls")),
     path("app/", include("app.urls")),
+    path("dashboard/", include("dashboard.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+admin.site.site_header = "Developer Admin"
+admin.site.site_title = "Developer Admin Portal"
+admin.site.index_title = "Welcome to Developer Admin Portal of Identiv"
