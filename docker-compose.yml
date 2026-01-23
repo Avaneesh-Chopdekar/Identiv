@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:14
+    image: pgvector/pgvector:pg14
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
